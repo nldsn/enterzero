@@ -11,3 +11,6 @@ export const reqAddOrUpdateTrademark = (data) => {
     return request({ method: 'POST', url: '/admin/product/baseTrademark/save',data });
   }
 };
+
+// 删除品牌 /admin/product/baseTrademark/remove/{id}
+export const deleteTrademark = (id) => request({ method: 'DELETE', url: `/admin/product/baseTrademark/remove/${id}`})

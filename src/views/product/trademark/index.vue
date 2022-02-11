@@ -3,12 +3,12 @@
     <!-- 添加按钮 -->
     <el-button type="primary" icon="el-icon-plus" style="margin-top: 20px" @click="addDialog">添加</el-button>
     <!-- 添加、修改弹出框 -->
-    <el-dialog :title="tmForm.id?'修改品牌':'添加品牌'" :visible.sync="dialogFormVisible">
-      <el-form v-model="tmForm">
-        <el-form-item label="品牌名称" :label-width="formLabelWidth">
+    <el-dialog :title="tmForm.id ? '修改品牌' : '添加品牌'" :visible.sync="dialogFormVisible">
+      <el-form :model="tmForm" :rules="rules" ref="tmForm">
+        <el-form-item label="品牌名称" :label-width="formLabelWidth" prop="tmName">
           <el-input autocomplete="off" v-model="tmForm.tmName"></el-input>
         </el-form-item>
-        <el-form-item label="品牌logo" :label-width="formLabelWidth">
+        <el-form-item label="品牌logo" :label-width="formLabelWidth" prop="logoUrl">
           <el-upload class="avatar-uploader" action="/dev-api/admin/product/fileUpload" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="tmForm.logoUrl" :src="tmForm.logoUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible=false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="addOrUpdate">确 定</el-button>
       </div>
     </el-dialog>
@@ -38,9 +38,9 @@
 
       <!-- 操作 -->
       <el-table-column label="操作" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-button size="mini" @click="updateTm(row)">编辑</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="danger" @click="deleteTm(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,6 +67,14 @@ export default {
         logoUrl: '',
         tmName: '',
       },
+      // 表单验证
+      rules: {
+        tmName: [
+          { required: true, message: '请输入品牌名称', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
+        ],
+        logoUrl: [{ required: true, message: '请选择品牌图片', trigger: 'change' }],
+      },
     };
   },
   methods: {
@@ -78,16 +86,27 @@ export default {
     // 分页器切换页码
     handleCurrentChange(val) {
       this.page = val;
-      this.getPageList();
+      this.getPageList(this.page);
     },
     // 添加品牌
     addDialog() {
+      this.tmForm.id = '';
       this.dialogFormVisible = true;
     },
     // 修改品牌
     updateTm(row) {
       this.dialogFormVisible = true;
-      this.tmForm = row;
+      this.tmForm = { ...row };
+    },
+    // 删除品牌
+    async deleteTm(row) {
+      try {
+        const result = await this.$API.tardemark.deleteTrademark(row.id);
+        if (result.code === 200) {
+          this.$message.success('删除成功');
+          this.getPageList(this.tableData.length > 1 ? this.page : this.page -1);
+        }
+      } catch (error) {}
     },
     // 图片上传成功时
     handleAvatarSuccess(res, file) {
@@ -108,25 +127,41 @@ export default {
       return isJPG && isLt2M;
     },
     // 请求页面品牌列表数据
-    async getPageList() {
-      const result = await this.$API.tardemark.reqTradeMarkList(this.page, this.limit);
+    async getPageList(page = 1) {
+      const result = await this.$API.tardemark.reqTradeMarkList(page, this.limit);
       if (result.code === 200) {
         this.tableData = result.data.records;
         this.total = result.data.total;
       }
     },
     // 点击确定按钮，提交添加或修改的品牌
-    async addOrUpdate() {
-      const result = await this.$API.tardemark.reqAddOrUpdateTrademark(this.tmForm);
-      if (result.code === 200) {
-        this.$message({
-          message:this.tmForm.id?'修改成功':'添加成功' ,
-          type: 'success',
-        });
-        this.tmForm = '';
-        this.dialogFormVisible = false;
-        this.getPageList();
-      }
+    addOrUpdate() {
+      // 点击确定按钮后验证整体表单是否合规
+      this.$refs.tmForm.validate(async (valid) => {
+        if (valid) {
+          try {
+            const result = await this.$API.tardemark.reqAddOrUpdateTrademark(this.tmForm);
+            if (result.code === 200) {
+              this.$message({
+                message: this.tmForm.id ? '修改成功' : '添加成功',
+                type: 'success',
+              });
+              this.tmForm.id = '';
+              this.tmForm.logoUrl = '';
+              this.tmForm.tmName = '';
+              this.dialogFormVisible = false;
+              this.getPageList();
+            }
+          } catch (error) {}
+        }
+      });
+    },
+    // 点击取消按钮 清空数据
+    cancel() {
+      this.tmForm.id = '';
+      this.tmForm.logoUrl = '';
+      this.tmForm.tmName = '';
+      this.dialogFormVisible = false;
     },
   },
   mounted() {

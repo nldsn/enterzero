@@ -37,8 +37,14 @@ export const constantRoutes = [
     path: '/product',
     component: Layout,
     // redirect: '/trademark',
-    meta: { title: '基础数据管理', icon: 'el-icon-s-help' },
+    meta: { title: '商品管理', icon: 'el-icon-s-help' },
     children: [
+      {
+        path: 'categorytrademark',
+        name: 'CategoryTrademark',
+        component: () => import('@/views/product/categoryTrademark'),
+        meta: { title: '品牌分类'},
+      },
       {
         path: 'trademark',
         name: 'Trademark',
@@ -46,10 +52,10 @@ export const constantRoutes = [
         meta: { title: '品牌列表'},
       },
       {
-        path: 'categorytrademark',
-        name: 'CategoryTrademark',
-        component: () => import('@/views/product/categoryTrademark'),
-        meta: { title: '品牌分类'},
+        path: 'attr',
+        name: 'Attr',
+        component: () => import('@/views/product/attr'),
+        meta: { title: '属性管理'},
       },
       {
         path: 'sku',

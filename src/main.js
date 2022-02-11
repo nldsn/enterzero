@@ -15,6 +15,8 @@ import router from './router';
 import '@/icons'; // icon
 import '@/permission'; // permission control
 
+import Selections from '@/components/Selections'
+
 import * as API from './api';
 
 if (process.env.NODE_ENV === 'production') {
@@ -26,7 +28,7 @@ if (process.env.NODE_ENV === 'production') {
 // Vue.use(ElementUI, { locale });
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
-
+Vue.component('Selections',Selections)
 Vue.config.productionTip = false;
 Vue.prototype.$API = API;
 
