@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 添加按钮 -->
-    <el-button type="primary" icon="el-icon-plus" style="margin-top: 20px" @click="addDialog">添加</el-button>
+    <el-button type="primary" icon="el-icon-plus" style="margin: 20px 0 20px 0" @click="addDialog">添加</el-button>
     <!-- 添加、修改弹出框 -->
     <el-dialog :title="tmForm.id ? '修改品牌' : '添加品牌'" :visible.sync="dialogFormVisible">
       <el-form :model="tmForm" :rules="rules" ref="tmForm">
@@ -22,8 +22,8 @@
       </div>
     </el-dialog>
     <!-- 总表格 -->
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column type="selection" width="80" align="center"></el-table-column>
+    <el-table :data="tableData" border>
+      <el-table-column type="selection" width="100" align="center"></el-table-column>
       <el-table-column label="序号" width="180" type="index" align="center"></el-table-column>
 
       <!-- logo -->
@@ -33,11 +33,11 @@
         </template>
       </el-table-column>
 
-      <!-- 姓名 -->
-      <el-table-column label="姓名" width="280" prop="tmName" align="center"></el-table-column>
+      <!-- 品牌名称 -->
+      <el-table-column label="品牌名称" prop="tmName" align="center"></el-table-column>
 
       <!-- 操作 -->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="220">
         <template slot-scope="{ row }">
           <el-button size="mini" @click="updateTm(row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteTm(row)">删除</el-button>
