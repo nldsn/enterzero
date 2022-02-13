@@ -1,17 +1,17 @@
 <template>
     <el-form :model="form" ref="form" label-width="80px" :inline="true" size="normal" style="padding-top: 10px">
       <el-form-item label="一级分类">
-        <el-select v-model="form.category1Id" placeholder="请选择" @change="changeCategory1(form.category1Id)">
+        <el-select :disabled="show" v-model="form.category1Id" placeholder="请选择" @change="changeCategory1(form.category1Id)">
           <el-option v-for="c1 in form.category1List" :key="c1.id" :label="c1.name" :value="c1.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="二级分类">
-        <el-select v-model="form.category2Id" placeholder="请选择" @change="changeCategory2(form.category2Id)">
+        <el-select :disabled="show" v-model="form.category2Id" placeholder="请选择" @change="changeCategory2(form.category2Id)">
           <el-option v-for="c2 in form.category2List" :key="c2.id" :label="c2.name" :value="c2.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="三级分类">
-        <el-select v-model="form.category3Id" placeholder="请选择" @change="changeCategory3(form.category3Id)">
+        <el-select :disabled="show" v-model="form.category3Id" placeholder="请选择" @change="changeCategory3(form.category3Id)">
           <el-option v-for="c3 in form.category3List" :key="c3.id" :label="c3.name" :value="c3.id"></el-option>
         </el-select>
       </el-form-item>
@@ -33,6 +33,7 @@ export default {
       },
     };
   },
+  props: ['show'],
   methods: {
     // 获取一级列表
     async getCategory1() {

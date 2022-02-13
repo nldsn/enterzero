@@ -7,3 +7,5 @@ export const reqCategory2 = (category1Id) => request({url: `/admin/product/getCa
 export const reqCategory3 = (category2Id) => request({url: `/admin/product/getCategory3/${category2Id}`,method: 'GET'})
 // 获取商品属性列表 GET /admin/product/attrInfoList/{category1Id}/{category2Id}/{category3Id}
 export const reqAttrInfoList = (category1Id, category2Id, category3Id) => request({url: `/admin/product/attrInfoList/${category1Id}/${category2Id}/${category3Id}`})
+// 保存或修改商品属性 POST /admin/product/saveAttrInfo
+export const reqSaveAttrInfo = (data) => request({url:'/admin/product/saveAttrInfo',method: 'post',data})
