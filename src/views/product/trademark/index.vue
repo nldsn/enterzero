@@ -101,7 +101,7 @@ export default {
     // 删除品牌
     async deleteTm(row) {
       try {
-        const result = await this.$API.tardemark.deleteTrademark(row.id);
+        const result = await this.$API.trademark.deleteTrademark(row.id);
         if (result.code === 200) {
           this.$message.success('删除成功');
           this.getPageList(this.tableData.length > 1 ? this.page : this.page -1);
@@ -128,7 +128,7 @@ export default {
     },
     // 请求页面品牌列表数据
     async getPageList(page = 1) {
-      const result = await this.$API.tardemark.reqTradeMarkList(page, this.limit);
+      const result = await this.$API.trademark.reqTradeMarkList(page, this.limit);
       if (result.code === 200) {
         this.tableData = result.data.records;
         this.total = result.data.total;
@@ -140,7 +140,7 @@ export default {
       this.$refs.tmForm.validate(async (valid) => {
         if (valid) {
           try {
-            const result = await this.$API.tardemark.reqAddOrUpdateTrademark(this.tmForm);
+            const result = await this.$API.trademark.reqAddOrUpdateTrademark(this.tmForm);
             if (result.code === 200) {
               this.$message({
                 message: this.tmForm.id ? '修改成功' : '添加成功',
